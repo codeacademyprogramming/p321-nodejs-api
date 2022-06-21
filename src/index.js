@@ -57,7 +57,7 @@ app.delete("/users/:userId", (req, res) => {
   return res.status(200).send("User successfully deleted");
 });
 
-app.listen(3333);
+app.listen(process.env.PORT || 3000);
 
 // module.exports = {
 //   USERS,
