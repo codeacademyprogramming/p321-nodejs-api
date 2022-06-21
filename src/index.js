@@ -15,7 +15,7 @@ function createRandomUser() {
   };
 }
 
-const USERS = Array.from({ length: 10 }).map((val) => {
+let USERS = Array.from({ length: 10 }).map((val) => {
   return createRandomUser();
 });
 
