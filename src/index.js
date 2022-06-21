@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { faker } = require("@faker-js/faker");
+const { json } = require("express");
 
 function createRandomUser() {
   return {
@@ -19,6 +20,7 @@ const USERS = Array.from({ length: 10 }).map((val) => {
 });
 
 const app = express();
+app.use(json());
 app.use(cors());
 
 app.get("/users", (req, res) => {
@@ -39,6 +41,7 @@ app.get("/users/:userId", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
+  console.log(req);
   const userId = faker.datatype.uuid();
   const newUser = { ...req.body.user, userId };
   USERS.push(newUser);
