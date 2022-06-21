@@ -41,11 +41,23 @@ app.get("/users/:userId", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-  console.log(req);
   const userId = faker.datatype.uuid();
   const newUser = { ...req.body.user, userId };
   USERS.push(newUser);
   return res.status(204).send("User successfully created");
+});
+
+app.put("/users", (req, res) => {
+  const userId = req.body.user.userId;
+  USERS = USERS.map((user) => {
+    if (user.userId === userId) {
+      return { ...user, ...req.body.user };
+    }
+
+    return user;
+  });
+
+  return res.status(200).send("User successfully updated");
 });
 
 app.delete("/users/:userId", (req, res) => {
