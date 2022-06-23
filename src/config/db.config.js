@@ -1,6 +1,6 @@
 module.exports = {
   HOST: process.env.HOST || "localhost",
-  USER: process.env.User || "agilatakishiyev",
+  USER: process.env.User || "",
   PASSWORD: process.env.Password || "123",
   DB: process.env.Database || "testdb",
   dialect: "postgres",
