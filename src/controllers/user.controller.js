@@ -1,23 +1,19 @@
 const db = require("../models");
 const User = db.users;
-const Op = db.Sequelize.Op;
+const { uploadFile } = require("../s3");
+
 // Create and Save a new Tutorial
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.user.username) {
-    res.status(400).send({
-      message: "Content can not be empty!",
-    });
-    return;
-  }
-  // Create a User
+exports.create = async (req, res) => {
+  const fileLocation = await uploadFile(req.files.avatar);
+
   const user = {
-    username: req.body.user.username,
-    email: req.body.user.email,
-    avatar: req.body.user.avatar,
-    password: req.body.user.password,
-    birthdate: req.body.user.birthdate,
+    username: req.body.username,
+    email: req.body.email,
+    avatar: fileLocation,
+    password: req.body.password,
+    birthdate: req.body.birthdate,
   };
+
   // Save User in the database
   User.create(user)
     .then((data) => {
@@ -32,7 +28,18 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {};
+exports.findAll = (req, res) => {
+  User.findAll()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
+};
 
 // Find a single User with an id
 exports.findOne = (req, res) => {};

@@ -2,8 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./models");
 const { json } = require("express");
+const fileupload = require("express-fileupload");
 
 const app = express();
+app.use(fileupload());
 app.use(express.urlencoded({ extended: true }));
 app.use(json());
 app.use(cors());
