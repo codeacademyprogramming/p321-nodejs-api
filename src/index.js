@@ -1,86 +1,46 @@
 const express = require("express");
 const cors = require("cors");
-const { faker } = require("@faker-js/faker");
 const { json } = require("express");
-
-function createRandomUser() {
-  return {
-    userId: faker.datatype.uuid(),
-    username: faker.internet.userName(),
-    email: faker.internet.email(),
-    avatar: faker.image.avatar(),
-    password: faker.internet.password(),
-    birthdate: faker.date.birthdate(),
-    registeredAt: faker.date.past(),
-  };
-}
-
-let USERS = Array.from({ length: 10 }).map((val) => {
-  return createRandomUser();
-});
+const db = require("../models");
 
 const app = express();
 app.use(json());
 app.use(cors());
 
+const User = require("../models/user");
+User()
+  .sync({ force: true })
+  .then(() => console.log("Sync complete"));
+
 app.get("/users", (req, res) => {
-  res.json(USERS);
+  res.json([]);
 });
 
 app.get("/users/:userId", (req, res) => {
-  if (!Boolean(req.params.userId)) {
-    return res.status(400).send("User Id required");
-  }
-  const foundUser = USERS.find((user) => user.userId === req.params.userId);
-
-  if (!foundUser) {
-    return res.status(404).send("User not found");
-  }
-
-  res.json(foundUser);
+  res.json({});
 });
 
-app.post("/users", (req, res) => {
-  const userId = faker.datatype.uuid();
-  const newUser = { ...req.body.user, userId };
-  USERS.push(newUser);
+app.post("/users", async (req, res) => {
+  const newUser = await User().create({
+    username: req.body.username,
+    avatar: req.body.avatar,
+    birthdate: req.body.birthdate,
+    password: req.body.password,
+    email: req.body.email,
+  });
+  newUser.save();
+
   return res.status(204).send("User successfully created");
 });
 
 app.put("/users", (req, res) => {
-  const userId = req.body.user.userId;
-  USERS = USERS.map((user) => {
-    if (user.userId === userId) {
-      return { ...user, ...req.body.user };
-    }
-
-    return user;
-  });
-
   return res.status(200).send("User successfully updated");
 });
 
 app.delete("/users/:userId", (req, res) => {
-  const indexOfUser = USERS.findIndex(
-    (user) => user.userId === req.params.userId
-  );
-  if (indexOfUser === -1) {
-    return res.status(404).send("User with the given ID not found");
-  }
-
-  USERS.splice(indexOfUser, 1);
   return res.status(200).send("User successfully deleted");
 });
 
-app.listen(process.env.PORT || 3333);
+const PORT = process.env.PORT;
 
-// module.exports = {
-//   USERS,
-//   createRandomUser,
-// };
-
-// responseObject = {
-//    error: ,
-//    status: ,
-//    data: ,
-// }
+app.listen(PORT);
