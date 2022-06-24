@@ -4,8 +4,10 @@ let sequelize;
 
 if (process.env.NODE_ENV === "production") {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
-    ssl: true,
     dialect: "postgres",
+    dialectOptions: {
+      ssl: true,
+    },
   });
 } else {
   sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
