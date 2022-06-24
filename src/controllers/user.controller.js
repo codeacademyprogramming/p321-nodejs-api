@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
   // Save User in the database
   User.create(user)
     .then((data) => {
-      res.send(data);
+      res.status(204).send(data);
     })
     .catch((err) => {
       res.status(500).send({
