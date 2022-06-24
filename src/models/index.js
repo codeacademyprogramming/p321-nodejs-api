@@ -3,7 +3,10 @@ const Sequelize = require("sequelize");
 let sequelize;
 
 if (process.env.NODE_ENV === "production") {
-  sequelize = new Sequelize(process.env.DATABASE_URL);
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    ssl: true,
+    dialect: "postgres",
+  });
 } else {
   sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
